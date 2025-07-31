@@ -1,3 +1,2 @@
-# nexventory
+# NexVentory
 
-A new Flutter project.
