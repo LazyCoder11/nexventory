@@ -1,0 +1,42 @@
+name: nexventory
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  supabase_flutter: ^2.9.1
+  flutter_dotenv: ^5.1.0
+  lucide_icons_flutter: ^3.0.5
+  material_design_icons_flutter: ^7.0.7296
+  intl: ^0.20.2
+  dropdown_button2: ^2.3.9
+  flutter_launcher_icons: ^0.14.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/onboard.jpg
+    - assets/images/google.jpg
+    - assets/animations/success.gif
+  fonts:
+    - family: MintGrotesk
+      fonts:
+        - asset: assets/fonts/MintGroteskTrial-Regular.ttf
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: assets/images/logo.png
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: assets/images/logo.png
