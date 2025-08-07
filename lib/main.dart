@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nexventory/src/screens/add_customers.dart';
 import 'package:nexventory/src/screens/add_product.dart';
 import 'package:nexventory/src/screens/dashboard.dart';
 import 'package:nexventory/src/screens/login_screen.dart';
 import 'package:nexventory/src/screens/onboard_screen.dart';
 import 'package:nexventory/src/screens/signup_screen.dart';
+import 'package:nexventory/src/screens/verify_email_screen.dart';
 import 'package:nexventory/src/screens/warehouse.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'src/screens/create_order.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 bool _supabaseInitialized = false; // ✅ New global flag
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +30,16 @@ Future<void> main() async {
 
   final session = Supabase.instance.client.auth.currentSession;
   final initialRoute = session != null ? '/home' : '/onboarding';
+
+  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    final session = data.session;
+    final event = data.event;
+
+    if (event == AuthChangeEvent.signedIn && session != null) {
+      // Automatically redirected after email confirmation
+      navigatorKey.currentState?.pushReplacementNamed('/home');
+    }
+  });
 
   runApp(MyApp(initialRoute: initialRoute));
 }
@@ -43,13 +57,8 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFF98FB98),
         fontFamily: 'MintGrotesk',
       ),
+      // {---------------------------------------------------------- ALL THE ROUTES -----------------------------------------------------------------}
       initialRoute: initialRoute ?? '/onboarding',
-      // routes: {
-      //   '/onboarding': (context) => const OnboardScreen(),
-      //   '/login': (context) => LoginScreen(),
-      //   '/signup': (context) => SignupScreen(),
-      //   '/home': (context) => const MyHomePage(), // 👈 Your main screen
-      // },
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/onboarding':
@@ -60,6 +69,8 @@ class MyApp extends StatelessWidget {
             return createSlideRoute(SignupScreen());
           case '/home':
             return createSlideRoute(const MyHomePage());
+          case '/verify-email':
+            return createSlideRoute(const VerifyEmailScreen());
           default:
             return null; // Or a default route
         }
@@ -129,123 +140,140 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80), // Increase height
-        child: AppBar(
-          backgroundColor: const Color(0xFF98FB98),
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          flexibleSpace: Padding(
-            padding: const EdgeInsets.only(
-              bottom: 24.0,
-            ), // 👈 bottom padding here
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 16.0),
-                    child: Row(
-                      children: [
-                        Icon(Icons.eco, size: 34, color: Colors.black),
-                        SizedBox(width: 8),
-                        Text(
-                          'NexVentory',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 28,
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Color(
+          0xFF98FB98,
+        ), // Transparent to blend with curved UI
+        statusBarIconBrightness:
+            Brightness.dark, // Light icons for dark background
+        systemNavigationBarColor: Color(0xFF98FB9B),
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
+    return SafeArea(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(80), // Increase height
+          child: AppBar(
+            backgroundColor: const Color(0xFF98FB98),
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            flexibleSpace: Padding(
+              padding: const EdgeInsets.only(
+                bottom: 24.0,
+              ), // 👈 bottom padding here
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 16.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.eco, size: 34, color: Colors.black),
+                          SizedBox(width: 8),
+                          Text(
+                            'NexVentory',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
 
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: GestureDetector(
-                      onTap: _handleLogout,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: Icon(
-                          Icons.logout_rounded,
-                          color: Color(0xFF98FB98),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: GestureDetector(
+                        onTap: _handleLogout,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(100),
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(10),
+                          child: Icon(
+                            Icons.logout_rounded,
+                            color: Color(0xFF98FB98),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
 
-      body: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.black),
-            left: BorderSide(color: Colors.black),
-            right: BorderSide(color: Colors.black),
-            bottom: BorderSide(color: Colors.black),
-          ),
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(30)),
-        ),
-        // margin: const EdgeInsets.only(top: 8), // optional spacing from AppBar
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            Dashboard(),
-            AddProduct(),
-            CreateOrderScreen(),
-            AddCustomer(),
-            Warehouse(),
-          ],
-        ),
-      ),
-
-      bottomNavigationBar: Material(
-        color: Colors.white,
-        child: Container(
-          height: 70, // horizontal margin
-          decoration: const BoxDecoration(
-            color: Color(0xFF98FB98),
-            // borderRadius: BorderRadius.only(
-            //   topLeft: Radius.circular(16),
-            //   topRight: Radius.circular(16),
-            // ),
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: Color.fromARGB(100, 152, 251, 159), // soft green shadow
-            //     spreadRadius: 20,
-            //     blurRadius: 30,
-            //     offset: Offset(0, -2), // shadow goes upward
-            //   ),
-            // ],
-          ),
-          child: TabBar(
-            controller: _tabController,
-            indicator: const BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.black, width: 3.0)),
+        body: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.black),
+              left: BorderSide(color: Colors.black),
+              right: BorderSide(color: Colors.black),
+              bottom: BorderSide(color: Colors.black),
             ),
-            labelColor: Color(0xFF0C1B2C),
-            unselectedLabelColor: Color(0xFF0C1B2C),
-            indicatorColor: Colors.white,
-            dividerColor: Colors.transparent,
-            tabs: [
-              const Tab(icon: Icon(Icons.home)),
-              Tab(icon: Icon(MdiIcons.cart)), // shopping cart
-              Tab(icon: Icon(MdiIcons.plusCircle)), // add
-              Tab(icon: Icon(MdiIcons.accountGroup)), // team/users
-              Tab(icon: Icon(MdiIcons.packageVariant)), // package search
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
+          // margin: const EdgeInsets.only(top: 8), // optional spacing from AppBar
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              Dashboard(),
+              AddProduct(),
+              CreateOrderScreen(),
+              AddCustomer(),
+              WarehouseScreen(),
             ],
+          ),
+        ),
+
+        bottomNavigationBar: Material(
+          color: Colors.white,
+          child: Container(
+            height: 70, // horizontal margin
+            decoration: const BoxDecoration(
+              color: Color(0xFF98FB98),
+              // borderRadius: BorderRadius.only(
+              //   topLeft: Radius.circular(16),
+              //   topRight: Radius.circular(16),
+              // ),
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Color.fromARGB(100, 152, 251, 159), // soft green shadow
+              //     spreadRadius: 20,
+              //     blurRadius: 30,
+              //     offset: Offset(0, -2), // shadow goes upward
+              //   ),
+              // ],
+            ),
+            child: TabBar(
+              controller: _tabController,
+              indicator: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.black, width: 3.0),
+                ),
+              ),
+              labelColor: Color(0xFF0C1B2C),
+              unselectedLabelColor: Color(0xFF0C1B2C),
+              indicatorColor: Colors.white,
+              dividerColor: Colors.transparent,
+              tabs: [
+                const Tab(icon: Icon(Icons.home)),
+                Tab(icon: Icon(MdiIcons.cart)), // shopping cart
+                Tab(icon: Icon(MdiIcons.plusCircle)), // add
+                Tab(icon: Icon(MdiIcons.accountGroup)), // team/users
+                Tab(icon: Icon(MdiIcons.packageVariant)), // package search
+              ],
+            ),
           ),
         ),
       ),

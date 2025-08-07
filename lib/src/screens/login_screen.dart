@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen>
                           Text(
                             "NexVentory",
                             style: TextStyle(
-                              fontSize: 42,
+                              fontSize: 32,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen>
                       const SizedBox(height: 8),
                       const Text(
                         "Store & Analyze without limits",
-                        style: TextStyle(fontSize: 20, color: Colors.black54),
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
                       const SizedBox(height: 48),
 

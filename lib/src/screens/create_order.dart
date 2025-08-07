@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -154,6 +156,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
       _fetchProducts();
     } catch (e) {
+      log('Error creating order: $e');
       if (!mounted) return;
       setState(() => _isLoading = false);
 
@@ -218,9 +221,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             final product = value as Map<String, dynamic>;
             if (!mounted) return;
             setState(() {
-              _stock = product['quantity'];
+              _stock = product['quantity'] ?? 0;
               final qty = int.tryParse(_quantityController.text.trim()) ?? 0;
-              final total = product['price'] * qty;
+              final price = product['price'] ?? 0;
+              final total = price * qty;
               _priceController.text = total.toStringAsFixed(2);
             });
           }

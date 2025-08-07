@@ -52,6 +52,7 @@ class _SignupScreenState extends State<SignupScreen>
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
+        emailRedirectTo: 'nexventory://auth/callback',
       );
 
       // Check if widget is still mounted before using context
@@ -64,7 +65,7 @@ class _SignupScreenState extends State<SignupScreen>
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/verify-email');
       }
     } on AuthException catch (e) {
       if (!mounted) return;
@@ -87,136 +88,140 @@ class _SignupScreenState extends State<SignupScreen>
     final isFormValid =
         emailController.text.isNotEmpty && passwordController.text.length >= 8;
 
-    return Scaffold(
-      appBar: customAppBar(context, "Signup"),
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          // Animated Blurry Circles
-          Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, _) {
-                return Stack(
-                  children: [
-                    _buildBlurredCircle(
-                      50 + _animation.value,
-                      0,
-                      Colors.pinkAccent.withAlpha(30),
-                    ),
-                    _buildBlurredCircle(
-                      250 - _animation.value,
-                      100,
-                      Colors.blue.withAlpha(30),
-                    ),
-                    _buildBlurredCircle(
-                      150 - _animation.value,
-                      150,
-                      Colors.green.withAlpha(30),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-
-          // Login Form
-          SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+    return SafeArea(
+      child: Scaffold(
+        appBar: customAppBar(context, "Signup"),
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            // Animated Blurry Circles
+            Positioned.fill(
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, _) {
+                  return Stack(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.eco, color: Colors.green, size: 42),
-                          SizedBox(width: 8),
-                          Text(
-                            "NexVentory",
-                            style: TextStyle(
-                              fontSize: 42,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      _buildBlurredCircle(
+                        50 + _animation.value,
+                        0,
+                        Colors.pinkAccent.withAlpha(30),
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Store & Analyze without limits",
-                        style: TextStyle(fontSize: 20, color: Colors.black54),
+                      _buildBlurredCircle(
+                        250 - _animation.value,
+                        100,
+                        Colors.blue.withAlpha(30),
                       ),
-                      const SizedBox(height: 48),
-
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Your email address"),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: _inputDecoration('dilerragip@gmail.com'),
-                        onChanged: (_) => setState(() {}),
-                      ),
-                      const SizedBox(height: 20),
-
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Choose a password"),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: passwordController,
-                        obscureText: !isPasswordVisible,
-                        decoration: _inputDecoration('min. 8 characters')
-                            .copyWith(
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  isPasswordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: Colors.grey,
-                                ),
-                                onPressed: () => setState(() {
-                                  isPasswordVisible = !isPasswordVisible;
-                                }),
-                              ),
-                            ),
-                        onChanged: (_) => setState(() {}),
-                      ),
-                      const SizedBox(height: 30),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: isFormValid ? () => signup(context) : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isFormValid
-                                ? Colors.greenAccent
-                                : Colors.grey[300],
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(28),
-                            ),
-                          ),
-                          child: const Text(
-                            'Create New Account',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                      _buildBlurredCircle(
+                        150 - _animation.value,
+                        150,
+                        Colors.green.withAlpha(30),
                       ),
                     ],
+                  );
+                },
+              ),
+            ),
+
+            // Login Form
+            SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.eco, color: Colors.green, size: 42),
+                            SizedBox(width: 8),
+                            Text(
+                              "NexVentory",
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Store & Analyze without limits",
+                          style: TextStyle(fontSize: 16, color: Colors.black54),
+                        ),
+                        const SizedBox(height: 48),
+
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text("Your email address"),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: _inputDecoration('dilerragip@gmail.com'),
+                          onChanged: (_) => setState(() {}),
+                        ),
+                        const SizedBox(height: 20),
+
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text("Choose a password"),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: passwordController,
+                          obscureText: !isPasswordVisible,
+                          decoration: _inputDecoration('min. 8 characters')
+                              .copyWith(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    isPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () => setState(() {
+                                    isPasswordVisible = !isPasswordVisible;
+                                  }),
+                                ),
+                              ),
+                          onChanged: (_) => setState(() {}),
+                        ),
+                        const SizedBox(height: 30),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: isFormValid
+                                ? () => signup(context)
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isFormValid
+                                  ? Colors.greenAccent
+                                  : Colors.grey[300],
+                              foregroundColor: Colors.black,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                            ),
+                            child: const Text(
+                              'Create New Account',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
