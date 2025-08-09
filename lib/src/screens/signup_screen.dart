@@ -1,7 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:nexventory/src/components/global/appbar.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:nexventory/src/components/global/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -16,10 +17,17 @@ class _SignupScreenState extends State<SignupScreen>
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isPasswordVisible = false;
+  bool isGoogleLoading = false;
 
   // Animation
   late AnimationController _animationController;
   late Animation<double> _animation;
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId:
+        '512925215650-av9p0e9o3ombv7b08fn357mmt1799rrh.apps.googleusercontent.com',
+    scopes: ['email', 'profile'],
+  );
 
   @override
   void initState() {
@@ -83,6 +91,78 @@ class _SignupScreenState extends State<SignupScreen>
     }
   }
 
+  Future<void> signUpWithGoogle() async {
+    setState(() {
+      isGoogleLoading = true;
+    });
+
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        setState(() {
+          isGoogleLoading = false;
+        });
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+        throw Exception('Failed to get Google authentication tokens');
+      }
+
+      final supabase = Supabase.instance.client;
+
+      final response = await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: googleAuth.idToken!,
+        accessToken: googleAuth.accessToken!,
+      );
+
+      if (response.user != null) {
+        // Optional: Check if this is a *new* user
+        final createdAtString = response.user!.createdAt;
+        final createdAt = DateTime.parse(createdAtString);
+        final now = DateTime.now();
+        final difference = now.difference(createdAt);
+
+        if (difference.inSeconds < 10) {
+          // This is a new sign-up
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Welcome! Your account has been created.'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+
+          Navigator.pushReplacementNamed(
+            context,
+            '/welcome',
+          ); // Sign-up welcome page
+        } else {
+          // Already existed (optional: handle differently)
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+      } else {
+        throw Exception('Failed to sign up with Google');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Google sign-up failed: ${e.toString()}'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } finally {
+      setState(() {
+        isGoogleLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isFormValid =
@@ -90,7 +170,7 @@ class _SignupScreenState extends State<SignupScreen>
 
     return SafeArea(
       child: Scaffold(
-        appBar: customAppBar(context, "Signup"),
+        // appBar: customAppBar(context, "Signup"),
         backgroundColor: Colors.white,
         body: Stack(
           children: [
@@ -114,7 +194,7 @@ class _SignupScreenState extends State<SignupScreen>
                       _buildBlurredCircle(
                         150 - _animation.value,
                         150,
-                        Colors.green.withAlpha(30),
+                        Color(0xFF98AFFB).withAlpha(30),
                       ),
                     ],
                   );
@@ -135,7 +215,7 @@ class _SignupScreenState extends State<SignupScreen>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
-                            Icon(Icons.eco, color: Colors.green, size: 42),
+                            Icon(Icons.eco, color: Color(0xFF98AFFB), size: 42),
                             SizedBox(width: 8),
                             Text(
                               "NexVentory",
@@ -152,6 +232,74 @@ class _SignupScreenState extends State<SignupScreen>
                           style: TextStyle(fontSize: 16, color: Colors.black54),
                         ),
                         const SizedBox(height: 48),
+
+                        // Google Sign In Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: isGoogleLoading
+                                ? null
+                                : signUpWithGoogle,
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              side: const BorderSide(color: Colors.grey),
+                              backgroundColor: Colors.white,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (isGoogleLoading) ...[
+                                  const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text(
+                                    'Signing in...',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ] else ...[
+                                  Container(
+                                    width: 20,
+                                    height: 20,
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          'https://developers.google.com/identity/images/g-logo.png',
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text(
+                                    'Continue with Google',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 24),
 
                         const Align(
                           alignment: Alignment.centerLeft,
@@ -200,7 +348,7 @@ class _SignupScreenState extends State<SignupScreen>
                                 : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: isFormValid
-                                  ? Colors.greenAccent
+                                  ? const Color(0xFF98AFFB)
                                   : Colors.grey[300],
                               foregroundColor: Colors.black,
                               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -211,6 +359,35 @@ class _SignupScreenState extends State<SignupScreen>
                             child: const Text(
                               'Create New Account',
                               style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              '/login',
+                            ); // Change route as needed
+                          },
+                          child: RichText(
+                            text: const TextSpan(
+                              text: "Already have an account? ",
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontFamily: "MintGrotesk",
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Login",
+                                  style: TextStyle(
+                                    color: Color(0xFF98AFFB),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

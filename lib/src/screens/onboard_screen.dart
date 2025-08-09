@@ -58,7 +58,7 @@ class OnboardScreen extends StatelessWidget {
                       child: Icon(
                         Icons.eco,
                         size: 40,
-                        color: Color(0xFF98FB98),
+                        color: Color(0xFF98AFFB),
                       ),
                     ),
                   ),
@@ -99,8 +99,8 @@ class OnboardScreen extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF98FB98),
-                        foregroundColor: const Color(0xFF0C1B2C),
+                        backgroundColor: const Color(0xFF98AFFB),
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                           side: const BorderSide(color: Colors.black, width: 1),
@@ -124,8 +124,8 @@ class OnboardScreen extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF98FB98),
-                        foregroundColor: const Color(0xFF0C1B2C),
+                        backgroundColor: const Color(0xFF98AFFB),
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                           side: const BorderSide(color: Colors.black, width: 1),

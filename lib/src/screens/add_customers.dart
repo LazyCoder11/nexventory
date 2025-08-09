@@ -139,14 +139,14 @@ class _AddCustomerState extends State<AddCustomer> {
 
   Widget _buildCustomerCard(Map<String, dynamic> customer, int index) {
     return Card(
-      color: const Color(0xFF98FB98),
+      color: const Color(0xFF98AFFB),
       margin: const EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: const BorderSide(color: Colors.black, width: 1),
       ),
       elevation: 0,
-      shadowColor: const Color(0xFF98FB98),
+      shadowColor: const Color(0xFF98AFFB),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -250,7 +250,7 @@ class _AddCustomerState extends State<AddCustomer> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _submitCustomer,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF98FB98),
+                      backgroundColor: const Color(0xFF98AFFB),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -300,7 +300,7 @@ class _AddCustomerState extends State<AddCustomer> {
                                     : Colors.grey,
                               ),
                               backgroundColor: _currentPage == index
-                                  ? Color(0xFF98FB98)
+                                  ? Color(0xFF98AFFB)
                                   : Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
@@ -327,7 +327,7 @@ class _AddCustomerState extends State<AddCustomer> {
               bottom: 16,
               right: 16,
               child: CircularProgressIndicator(
-                color: Color(0xFF98FB98),
+                color: Color(0xFF98AFFB),
                 strokeWidth: 3,
               ),
             ),

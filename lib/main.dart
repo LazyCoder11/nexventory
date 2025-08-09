@@ -19,11 +19,16 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // GREEN COLOR : 0xFF98FB98
+
   if (!_supabaseInitialized) {
     await Supabase.initialize(
       url: 'https://ofhmwonavzqylclxgdnk.supabase.co',
       anonKey:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9maG13b25hdnpxeWxjbHhnZG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1ODc4MjYsImV4cCI6MjA2NDE2MzgyNn0.yyU0tjMbp56VdnWmNV9iY_JY5IpUTey6sBZxyOIDT4k',
+      authOptions: const FlutterAuthClientOptions(
+        authFlowType: AuthFlowType.pkce,
+      ),
     );
     _supabaseInitialized = true; // ✅ Mark as initialized
   }
@@ -54,7 +59,7 @@ class MyApp extends StatelessWidget {
       title: 'NexVentory',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xFF98FB98),
+        scaffoldBackgroundColor: Color(0xFF98AFFB),
         fontFamily: 'MintGrotesk',
       ),
       // {---------------------------------------------------------- ALL THE ROUTES -----------------------------------------------------------------}
@@ -143,26 +148,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Color(
-          0xFF98FB98,
+          0xFF98AFFB,
         ), // Transparent to blend with curved UI
         statusBarIconBrightness:
             Brightness.dark, // Light icons for dark background
-        systemNavigationBarColor: Color(0xFF98FB9B),
+        systemNavigationBarColor: Color(0xFF98AFFB),
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(80), // Increase height
+          preferredSize: const Size.fromHeight(80),
           child: AppBar(
-            backgroundColor: const Color(0xFF98FB98),
+            backgroundColor: const Color(0xFF98AFFB),
             automaticallyImplyLeading: false,
             elevation: 0,
             flexibleSpace: Padding(
-              padding: const EdgeInsets.only(
-                bottom: 24.0,
-              ), // 👈 bottom padding here
+              padding: const EdgeInsets.only(bottom: 24.0),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Row(
@@ -200,7 +203,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           padding: const EdgeInsets.all(10),
                           child: Icon(
                             Icons.logout_rounded,
-                            color: Color(0xFF98FB98),
+                            color: Color(0xFF98AFFB),
                           ),
                         ),
                       ),
@@ -212,49 +215,36 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
         ),
 
-        body: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(color: Colors.black),
-              left: BorderSide(color: Colors.black),
-              right: BorderSide(color: Colors.black),
-              bottom: BorderSide(color: Colors.black),
+        body: SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.black),
+                left: BorderSide(color: Colors.black),
+                right: BorderSide(color: Colors.black),
+                bottom: BorderSide(color: Colors.black),
+              ),
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-          ),
-          // margin: const EdgeInsets.only(top: 8), // optional spacing from AppBar
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              Dashboard(),
-              AddProduct(),
-              CreateOrderScreen(),
-              AddCustomer(),
-              WarehouseScreen(),
-            ],
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                Dashboard(),
+                AddProduct(),
+                CreateOrderScreen(),
+                AddCustomer(),
+                WarehouseScreen(),
+              ],
+            ),
           ),
         ),
 
         bottomNavigationBar: Material(
           color: Colors.white,
           child: Container(
-            height: 70, // horizontal margin
-            decoration: const BoxDecoration(
-              color: Color(0xFF98FB98),
-              // borderRadius: BorderRadius.only(
-              //   topLeft: Radius.circular(16),
-              //   topRight: Radius.circular(16),
-              // ),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Color.fromARGB(100, 152, 251, 159), // soft green shadow
-              //     spreadRadius: 20,
-              //     blurRadius: 30,
-              //     offset: Offset(0, -2), // shadow goes upward
-              //   ),
-              // ],
-            ),
+            height: 70,
+            decoration: const BoxDecoration(color: Color(0xFF98AFFB)),
             child: TabBar(
               controller: _tabController,
               indicator: const BoxDecoration(
@@ -268,10 +258,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               dividerColor: Colors.transparent,
               tabs: [
                 const Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(MdiIcons.cart)), // shopping cart
-                Tab(icon: Icon(MdiIcons.plusCircle)), // add
-                Tab(icon: Icon(MdiIcons.accountGroup)), // team/users
-                Tab(icon: Icon(MdiIcons.packageVariant)), // package search
+                Tab(icon: Icon(MdiIcons.cart)),
+                Tab(icon: Icon(MdiIcons.plusCircle)),
+                Tab(icon: Icon(MdiIcons.accountGroup)),
+                Tab(icon: Icon(MdiIcons.packageVariant)),
               ],
             ),
           ),

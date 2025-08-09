@@ -68,7 +68,7 @@ class _AddProductState extends State<AddProduct> {
         ),
         shadowColor: Colors.black,
         elevation: 2,
-        // backgroundColor: Color(0xFF98FB98),
+        // backgroundColor: Color(0xFF98AFFB),
         title: const Text('Recent Orders'),
         content: SizedBox(
           width: double.maxFinite,
@@ -76,7 +76,7 @@ class _AddProductState extends State<AddProduct> {
               ? const Text("No orders found for this product.")
               : Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFF98FB98),
+                    color: Color(0xFF98AFFB),
                     border: Border.all(width: 1),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
@@ -209,7 +209,7 @@ class _AddProductState extends State<AddProduct> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Color(0xFF98FB98),
+        color: Color(0xFF98AFFB),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(width: 1),
       ),
@@ -234,10 +234,7 @@ class _AddProductState extends State<AddProduct> {
                       decoration: BoxDecoration(
                         border: Border.all(width: 1),
                         gradient: LinearGradient(
-                          colors: [
-                            const Color(0xFF98FB98),
-                            const Color(0xFF90EE90),
-                          ],
+                          colors: [Colors.white, Colors.white],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -280,13 +277,13 @@ class _AddProductState extends State<AddProduct> {
                               //   decoration: BoxDecoration(
                               //     color: hasOrders
                               //         ? const Color(
-                              //             0xFF98FB98,
+                              //             0xFF98AFFB,
                               //           ).withValues(alpha: 0.2)
                               //         : Colors.orange.withValues(alpha: 0.2),
                               //     borderRadius: BorderRadius.circular(16),
                               //     border: Border.all(
                               //       color: hasOrders
-                              //           ? const Color(0xFF98FB98)
+                              //           ? const Color(0xFF98AFFB)
                               //           : Colors.orange,
                               //       width: 1,
                               //     ),
@@ -300,7 +297,7 @@ class _AddProductState extends State<AddProduct> {
                               //             : Icons.pending_outlined,
                               //         size: 14,
                               //         color: hasOrders
-                              //             ? const Color(0xFF98FB98)
+                              //             ? const Color(0xFF98AFFB)
                               //             : Colors.orange,
                               //       ),
                               //       const SizedBox(width: 4),
@@ -310,7 +307,7 @@ class _AddProductState extends State<AddProduct> {
                               //           fontSize: 11,
                               //           fontWeight: FontWeight.w600,
                               //           color: hasOrders
-                              //               ? const Color(0xFF98FB98)
+                              //               ? const Color(0xFF98AFFB)
                               //               : Colors.orange,
                               //         ),
                               //       ),
@@ -355,7 +352,7 @@ class _AddProductState extends State<AddProduct> {
                     decoration: BoxDecoration(
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color(0xFF98FB98)),
+                      border: Border.all(color: Color(0xFF98AFFB)),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,7 +360,7 @@ class _AddProductState extends State<AddProduct> {
                         Icon(
                           Icons.description_outlined,
                           size: 16,
-                          color: Color(0xFF98FB98),
+                          color: Color(0xFF98AFFB),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -371,7 +368,7 @@ class _AddProductState extends State<AddProduct> {
                             product['description'],
                             style: TextStyle(
                               fontSize: 14,
-                              color: Color(0xFF98FB98),
+                              color: Color(0xFF98AFFB),
                               height: 1.4,
                             ),
                           ),
@@ -391,10 +388,7 @@ class _AddProductState extends State<AddProduct> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              const Color(0xFF98FB98),
-                              const Color(0xFF90EE90),
-                            ],
+                            colors: [Colors.white, Colors.white],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -406,12 +400,12 @@ class _AddProductState extends State<AddProduct> {
                           children: [
                             Row(
                               children: [
-                                const Icon(
-                                  Icons.currency_rupee,
-                                  color: Colors.black,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 4),
+                                // const Icon(
+                                //   Icons.currency_rupee,
+                                //   color: Colors.black,
+                                //   size: 16,
+                                // ),
+                                // const SizedBox(width: 4),
                                 const Text(
                                   'Price',
                                   style: TextStyle(
@@ -444,10 +438,7 @@ class _AddProductState extends State<AddProduct> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              const Color(0xFF98FB98),
-                              const Color(0xFF90EE90),
-                            ],
+                            colors: [Colors.white, Colors.white],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -459,12 +450,12 @@ class _AddProductState extends State<AddProduct> {
                           children: [
                             Row(
                               children: [
-                                Icon(
-                                  Icons.inventory_outlined,
-                                  color: Colors.black,
-                                  size: 18,
-                                ),
-                                const SizedBox(width: 4),
+                                // Icon(
+                                //   Icons.inventory_outlined,
+                                //   color: Colors.black,
+                                //   size: 18,
+                                // ),
+                                // const SizedBox(width: 4),
                                 Text(
                                   'Stock',
                                   style: TextStyle(
@@ -501,7 +492,7 @@ class _AddProductState extends State<AddProduct> {
                 //     gradient: LinearGradient(
                 //       colors: hasOrders
                 //           ? [
-                //               const Color(0xFF98FB98).withValues(alpha: 0.8),
+                //               const Color(0xFF98AFFB).withValues(alpha: 0.8),
                 //               const Color(0xFF90EE90).withValues(alpha: 0.8),
                 //             ]
                 //           : [Colors.grey.shade300, Colors.grey.shade400],
@@ -619,7 +610,7 @@ class _AddProductState extends State<AddProduct> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _submitProduct,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF98FB98),
+                      backgroundColor: const Color(0xFF98AFFB),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -667,7 +658,7 @@ class _AddProductState extends State<AddProduct> {
                                     : Colors.grey,
                               ),
                               backgroundColor: _currentPage == index
-                                  ? Color(0xFF98FB98)
+                                  ? Color(0xFF98AFFB)
                                   : Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
@@ -694,7 +685,7 @@ class _AddProductState extends State<AddProduct> {
               bottom: 16,
               right: 16,
               child: CircularProgressIndicator(
-                color: Color(0xFF98FB98),
+                color: Color(0xFF98AFFB),
                 strokeWidth: 3,
               ),
             ),

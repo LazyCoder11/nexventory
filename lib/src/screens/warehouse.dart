@@ -30,7 +30,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   final TextEditingController suppliableToController = TextEditingController();
 
   // Colors
-  static const Color primaryGreen = Color(0xFF98FB98);
+  static const Color primaryGreen = Color(0xFF98AFFB);
   static const Color lightGreen = Color(0xFFE8FDE8);
 
   @override

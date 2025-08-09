@@ -152,7 +152,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: Color(0xFF98FB98),
+          color: const Color(0xFF98AFFB),
           border: Border.all(width: 1),
           borderRadius: BorderRadius.circular(20),
         ),
@@ -195,7 +195,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                 ? customerName[0].toUpperCase()
                                 : 'U',
                             style: const TextStyle(
-                              color: Color(0xFF98FB98),
+                              color: Color(0xFF98AFFB),
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -258,7 +258,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xFF98FB98),
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -276,10 +276,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [
-                                const Color(0xFF98FB98),
-                                const Color(0xFF90EE90),
-                              ],
+                              colors: [Colors.white, Colors.white],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
@@ -467,7 +464,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: _fetchRecentOrders,
-        color: const Color(0xFF98FB98),
+        color: const Color(0xFF98AFFB),
         backgroundColor: Colors.white,
         child: _isLoading
             ? const Center(
@@ -525,7 +522,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: const Color(0xFF98FB98),
+                                      color: const Color(0xFF98AFFB),
                                       width: 1,
                                     ),
                                     boxShadow: [
@@ -587,7 +584,6 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                     ),
                   ),
 
-                  // Bottom Spacing
                   const SliverToBoxAdapter(child: SizedBox(height: 32)),
                 ],
               ),

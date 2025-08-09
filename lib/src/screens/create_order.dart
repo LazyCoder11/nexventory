@@ -198,7 +198,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         width: 180,
         padding: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
-          color: Color(0xFF98FB98),
+          color: Color(0xFF98AFFB),
           border: Border.all(color: Colors.black),
           borderRadius: BorderRadius.circular(16),
         ),
@@ -344,7 +344,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _submitOrder,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF98FB98),
+                      backgroundColor: const Color(0xFF98AFFB),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -365,7 +365,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             const Positioned(
               bottom: 16,
               right: 16,
-              child: CircularProgressIndicator(color: Color(0xFF98FB98)),
+              child: CircularProgressIndicator(color: Color(0xFF98AFFB)),
             ),
         ],
       ),

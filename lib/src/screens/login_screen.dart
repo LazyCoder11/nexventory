@@ -1,8 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:nexventory/src/components/global/appbar.dart';
+// import 'package:nexventory/src/components/global/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +17,15 @@ class _LoginScreenState extends State<LoginScreen>
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isPasswordVisible = false;
+  bool isLoading = false;
+  bool isGoogleLoading = false;
+
+  // Google Sign In instance
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId:
+        '512925215650-av9p0e9o3ombv7b08fn357mmt1799rrh.apps.googleusercontent.com',
+    scopes: ['email', 'profile'],
+  );
 
   // Animation
   late AnimationController _animationController;
@@ -43,6 +53,10 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   void login(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
+
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
@@ -57,18 +71,9 @@ class _LoginScreenState extends State<LoginScreen>
       if (response.user != null) {
         if (!mounted) return;
 
-        // Show success popup
-        // showDialog(
-        //   context: context,
-        //   barrierDismissible: false,
-        //   barrierColor: Colors.black45,
-        //   builder: (context) => _buildSuccessPopup(),
-        // );
-
-        // Redirect after 2 seconds
-        await Future.delayed(const Duration(seconds: 6));
+        // Redirect after successful login
+        await Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;
-        // Navigator.pop(context); // Close popup
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         throw AuthException("Login failed");
@@ -89,6 +94,81 @@ class _LoginScreenState extends State<LoginScreen>
           backgroundColor: Colors.redAccent,
         ),
       );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    setState(() {
+      isGoogleLoading = true;
+    });
+
+    try {
+      // Start the native Google Sign-In flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // User cancelled the sign-in
+        setState(() {
+          isGoogleLoading = false;
+        });
+        return;
+      }
+
+      // Get the authentication details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+        throw Exception('Failed to get Google authentication tokens');
+      }
+
+      // Sign in to Supabase using the Google credentials
+      final supabase = Supabase.instance.client;
+
+      final response = await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: googleAuth.idToken!,
+        accessToken: googleAuth.accessToken!,
+      );
+
+      if (response.user != null) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Successfully signed in with Google!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Navigate to home screen
+        await Future.delayed(const Duration(seconds: 1));
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        throw Exception('Failed to sign in to Supabase');
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Google sign-in failed: ${e.toString()}'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isGoogleLoading = false;
+        });
+      }
     }
   }
 
@@ -98,7 +178,16 @@ class _LoginScreenState extends State<LoginScreen>
         emailController.text.isNotEmpty && passwordController.text.length >= 8;
 
     return Scaffold(
-      appBar: customAppBar(context, "Login"),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   title: Text(
+      //     "Login",
+      //     style: const TextStyle(
+      //       color: Color(0xFF0C1B2C),
+      //       fontWeight: FontWeight.w500,
+      //     ),
+      //   ),
+      // ),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -122,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen>
                     _buildBlurredCircle(
                       150 - _animation.value,
                       150,
-                      Colors.green.withAlpha(30),
+                      Color(0xFF98AFFB).withAlpha(30),
                     ),
                   ],
                 );
@@ -143,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Icon(Icons.eco, color: Colors.green, size: 42),
+                          Icon(Icons.eco, color: Color(0xFF98AFFB), size: 42),
                           SizedBox(width: 8),
                           Text(
                             "NexVentory",
@@ -160,6 +249,89 @@ class _LoginScreenState extends State<LoginScreen>
                         style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
                       const SizedBox(height: 48),
+
+                      // Google Sign In Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: isGoogleLoading ? null : signInWithGoogle,
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            side: const BorderSide(color: Colors.grey),
+                            backgroundColor: Colors.white,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (isGoogleLoading) ...[
+                                const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Signing in...',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ] else ...[
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        'https://developers.google.com/identity/images/g-logo.png',
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Continue with Google',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Divider
+                      Row(
+                        children: [
+                          Expanded(child: Divider(color: Colors.grey[300])),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              'or continue with email',
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                          ),
+                          Expanded(child: Divider(color: Colors.grey[300])),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
 
                       const Align(
                         alignment: Alignment.centerLeft,
@@ -203,10 +375,12 @@ class _LoginScreenState extends State<LoginScreen>
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: isFormValid ? () => login(context) : null,
+                          onPressed: (isFormValid && !isLoading)
+                              ? () => login(context)
+                              : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isFormValid
-                                ? Colors.greenAccent
+                            backgroundColor: (isFormValid && !isLoading)
+                                ? const Color(0xFF98AFFB)
                                 : Colors.grey[300],
                             foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -214,50 +388,47 @@ class _LoginScreenState extends State<LoginScreen>
                               borderRadius: BorderRadius.circular(28),
                             ),
                           ),
-                          child: const Text(
-                            'Continue',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                          child: isLoading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : const Text(
+                                  'Continue',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                       const SizedBox(height: 30),
-
-                      // Row(
-                      //   children: const [
-                      //     Expanded(child: Divider()),
-                      //     Padding(
-                      //       padding: EdgeInsets.symmetric(horizontal: 12),
-                      //       child: Text("or", style: TextStyle(fontSize: 16)),
-                      //     ),
-                      //     Expanded(child: Divider()),
-                      //   ],
-                      // ),
-                      // const SizedBox(height: 30),
-
-                      // SizedBox(
-                      //   width: double.infinity,
-                      //   child: OutlinedButton.icon(
-                      //     icon: Image.asset(
-                      //       'assets/images/google.jpg', // Your local image path
-                      //       height: 24,
-                      //       width: 24,
-                      //     ),
-                      //     label: const Text(
-                      //       'Sign up with Google',
-                      //       style: TextStyle(color: Colors.black),
-                      //     ),
-                      //     onPressed: () {},
-                      //     style: OutlinedButton.styleFrom(
-                      //       padding: const EdgeInsets.symmetric(
-                      //         vertical: 10,
-                      //         horizontal: 14,
-                      //       ),
-                      //       shape: RoundedRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(28),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacementNamed(context, '/signup');
+                        },
+                        child: RichText(
+                          text: const TextSpan(
+                            text: "Create new account? ",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontFamily: "MintGrotesk",
+                            ),
+                            children: [
+                              TextSpan(
+                                text: "Sign Up",
+                                style: TextStyle(
+                                  color: Color(0xFF98AFFB),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -313,37 +484,4 @@ class _LoginScreenState extends State<LoginScreen>
       ),
     );
   }
-
-  // Widget _buildSuccessPopup() {
-  //   return Center(
-  //     child: BackdropFilter(
-  //       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-  //       child: Container(
-  //         padding: const EdgeInsets.all(24),
-  //         decoration: BoxDecoration(
-  //           color: const Color.fromARGB(97, 0, 0, 0),
-  //           borderRadius: BorderRadius.circular(20),
-  //         ),
-  //         width: 250,
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             Image.asset(
-  //               'assets/animations/success.gif',
-  //               // height: 100,
-  //               // width: 100,
-  //             ),
-  //             const SizedBox(height: 16),
-  //             const Text(
-  //               'Successfully Logged in',
-  //               style: TextStyle(color: Colors.white, fontSize: 16),
-  //               textAlign: TextAlign.center,
-  //             ),
-  //             const SizedBox(height: 16),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
