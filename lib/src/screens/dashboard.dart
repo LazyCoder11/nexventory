@@ -371,7 +371,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                 Icon(
                                   Icons.location_on_outlined,
                                   size: 16,
-                                  color: Color(0xFF98FB98),
+                                  color: Color(0xFF98AFFB),
                                 ),
                                 const SizedBox(width: 6),
                                 Expanded(
@@ -379,7 +379,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                     order['delivery_address'],
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: Color(0xFF98FB98),
+                                      color: Color(0xFF98AFFB),
                                     ),
                                   ),
                                 ),
@@ -394,7 +394,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                 Icon(
                                   Icons.note_outlined,
                                   size: 16,
-                                  color: Color(0xFF98FB98),
+                                  color: Color(0xFF98AFFB),
                                 ),
                                 const SizedBox(width: 6),
                                 Expanded(
@@ -402,7 +402,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                     order['note'],
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: Color(0xFF98FB98),
+                                      color: Color(0xFF98AFFB),
                                     ),
                                   ),
                                 ),
@@ -428,15 +428,15 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 120,
-            height: 120,
+            width: 60,
+            height: 60,
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.shopping_cart_outlined,
-              size: 60,
+              size: 24,
               color: Colors.grey.shade400,
             ),
           ),
@@ -444,7 +444,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
           Text(
             "No Recent Orders",
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.grey.shade700,
             ),
@@ -452,7 +452,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
           const SizedBox(height: 8),
           Text(
             "Your recent orders will appear here",
-            style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -469,7 +469,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
         child: _isLoading
             ? const Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF98FB98)),
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF98AFFB)),
                 ),
               )
             : _recentOrders.isEmpty

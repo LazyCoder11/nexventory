@@ -53,6 +53,8 @@ class MyApp extends StatelessWidget {
   final String? initialRoute;
   const MyApp({super.key, this.initialRoute});
 
+  // PRIMARY COLOR: #98AFFB
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -151,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           0xFF98AFFB,
         ), // Transparent to blend with curved UI
         statusBarIconBrightness:
-            Brightness.dark, // Light icons for dark background
+            Brightness.light, // Light icons for dark background
         systemNavigationBarColor: Color(0xFF98AFFB),
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
@@ -159,13 +161,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(80),
+          preferredSize: const Size.fromHeight(60),
           child: AppBar(
             backgroundColor: const Color(0xFF98AFFB),
             automaticallyImplyLeading: false,
             elevation: 0,
             flexibleSpace: Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
+              padding: const EdgeInsets.only(bottom: 10.0),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Row(
@@ -175,14 +177,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       padding: EdgeInsets.only(left: 16.0),
                       child: Row(
                         children: [
-                          Icon(Icons.eco, size: 34, color: Colors.black),
+                          Icon(Icons.eco, size: 24, color: Colors.black),
                           SizedBox(width: 8),
                           Text(
                             'NexVentory',
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 28,
+                              fontSize: 18,
                             ),
                           ),
                         ],
@@ -202,6 +204,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           ),
                           padding: const EdgeInsets.all(10),
                           child: Icon(
+                            size: 14,
                             Icons.logout_rounded,
                             color: Color(0xFF98AFFB),
                           ),
@@ -243,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         bottomNavigationBar: Material(
           color: Colors.white,
           child: Container(
-            height: 70,
+            height: 50,
             decoration: const BoxDecoration(color: Color(0xFF98AFFB)),
             child: TabBar(
               controller: _tabController,
@@ -257,11 +260,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               indicatorColor: Colors.white,
               dividerColor: Colors.transparent,
               tabs: [
-                const Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(MdiIcons.cart)),
-                Tab(icon: Icon(MdiIcons.plusCircle)),
-                Tab(icon: Icon(MdiIcons.accountGroup)),
-                Tab(icon: Icon(MdiIcons.packageVariant)),
+                const Tab(icon: Icon(Icons.home, size: 18)),
+                Tab(icon: Icon(MdiIcons.cart, size: 18)),
+                Tab(icon: Icon(MdiIcons.plusCircle, size: 18)),
+                Tab(icon: Icon(MdiIcons.accountGroup, size: 18)),
+                Tab(icon: Icon(MdiIcons.packageVariant, size: 18)),
               ],
             ),
           ),
